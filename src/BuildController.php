@@ -2,7 +2,6 @@
 
 namespace Builds;
 
-use Illuminate\Support\Str;
 use WP_Error;
 use WP_Query;
 use WP_REST_Controller;
@@ -63,13 +62,20 @@ class BuildController extends WP_REST_Controller
                 if (! is_wp_error($response)) {
                     $stream = apply_filters('vercel_builds_log_stream', static::$logStream);
                     $tag = apply_filters('vercel_builds_log_tag', static::$logTag);
-                    
-                    $log = collect(json_decode($response['body']))
-                        ->filter(fn ($log) => $log->type === $stream && Str::startsWith($log->payload->text, $tag))
-                        ->map(fn ($log) => Str::of($log->payload->text)->ltrim($tag))
-                        ->implode('<br>');
+                    $events = json_decode($response['body']);
+                    $lines = [];
 
-                    update_post_meta($builds[0]->ID, 'log', $log);
+                    if (is_array($events)) {
+                        foreach ($events as $event) {
+                            $text = $event->payload->text;
+
+                            if ($event->type === $stream && is_string($text) && str_starts_with($text, $tag)) {
+                                $lines[] = substr($text, strlen($tag));
+                            }
+                        }
+                    }
+
+                    update_post_meta($builds[0]->ID, 'log', implode('<br>', $lines));
                 }
             }
 

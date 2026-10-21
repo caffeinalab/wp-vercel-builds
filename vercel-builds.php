@@ -3,20 +3,20 @@
 use Builds\Build;
 use Builds\BuildController;
 use Builds\BuildTable;
-use Illuminate\Support\Arr;
 /**
  * Vercel Builds
  * 
  * @package     Vercel Builds
  * @author      Stefano Fasoli <stefanofasoli17@gmail.com>
- * @version     2.0.0
+ * @version     3.1.0
  * 
  * @wordpress-plugin
  * Plugin Name:     Vercel Builds
  * Description:     Vercel Builds
- * Version:         2.0.0
+ * Version:         3.1.0
  * Author:          Stefano Fasoli <stefanofasoli17@gmail.com>
  * Text Domain:     vercel_builds
+ * Requires PHP:    8.0
  */
 
 // Exit if accessed directly.
@@ -117,7 +117,7 @@ $buildPageTemplate = function () {
 $logsPageTemplate = function () {
 	print('<div class="modal-window-container">');
 	
-	if (! Arr::has($_REQUEST, ['modal_window', 'deployment_id'])) {
+	if (! isset($_REQUEST['modal_window'], $_REQUEST['deployment_id'])) {
 		print('Please access this page properly.</div>');
 		
 		return;

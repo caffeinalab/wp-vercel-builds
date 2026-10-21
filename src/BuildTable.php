@@ -2,8 +2,6 @@
 
 namespace Builds;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use WP_List_Table;
 use WP_Query;
 
@@ -114,28 +112,25 @@ class BuildTable extends WP_List_Table
         }
 
         $query = new WP_Query($args);
-        
-        $deployments = collect($query->get_posts())
-            // ensure deployment is an array and enrich with additional metadata
-            ->map(function ($deployment) {
-                $deployment = (array) $deployment;
-                foreach(['url', 'status', 'start', 'end', 'commit'] as $field) {
-                    $deployment[$field] = get_post_meta($deployment['ID'], $field, true);
-                }
 
-                return $deployment;
-            })
-            // table friendly format
-            ->map(fn ($deployment) => [
-                'url'       => $this->formatUrl($deployment['url']),
-                'status'    => $this->formatStatus($deployment['status']),
-                'duration'  => $this->formatDuration($deployment['start'], $deployment['end']),
-                'date'      => date('d/m/y H:i:s', $deployment['start']),
-                'version'   => $this->formatCommit($deployment['commit']),
-                'statusCode'=> $deployment['status'],
-                'post_id'   => $deployment['ID'],
-                'actions'   => $this->getActions($deployment)
-            ]);
+        $deployments = array_map(function ($post) {
+            $deployment = (array) $post;
+
+            foreach (['url', 'status', 'start', 'end', 'commit'] as $field) {
+                $deployment[$field] = get_post_meta($deployment['ID'], $field, true);
+            }
+
+            return [
+                'url'        => $this->formatUrl($deployment['url']),
+                'status'     => $this->formatStatus($deployment['status']),
+                'duration'   => $this->formatDuration($deployment['start'], $deployment['end']),
+                'date'       => date('d/m/y H:i:s', $deployment['start']),
+                'version'    => $this->formatCommit($deployment['commit']),
+                'statusCode' => $deployment['status'],
+                'post_id'    => $deployment['ID'],
+                'actions'    => $this->getActions($deployment),
+            ];
+        }, $query->get_posts());
 
         return [
             'data' => $deployments,
@@ -152,7 +147,7 @@ class BuildTable extends WP_List_Table
     {
         if ($deployment['status'] === 'deployment.error') {
             // View Logs
-            $querystring = Arr::query(static::MODAL_ARGS);
+            $querystring = http_build_query(static::MODAL_ARGS, '', '&', PHP_QUERY_RFC3986);
             $deploymentId = sprintf('deployment_id=%1$s', $deployment['ID']);
             $url = admin_url("admin.php?{$deploymentId}&{$querystring}");
             
@@ -210,7 +205,7 @@ class BuildTable extends WP_List_Table
         return sprintf(
             '<a target="_blank" href="%1$s">%2$s</a>', 
             "https://{$url}",
-            Str::limit($url, 32)
+            $this->limitString($url, 32)
         );
     }
 
@@ -251,7 +246,7 @@ class BuildTable extends WP_List_Table
      */
     private function formatCommit(string $commit): string
     {
-        $text = Str::limit($commit, 8, '');
+        $text = $this->limitString($commit, 8, '');
         
         return "
         <button type=\"button\" onclick=\"copyToClipboard(this)\" value=\"{$commit}\">
@@ -266,5 +261,14 @@ class BuildTable extends WP_List_Table
     private function center(string $string): string
     {
         return "<center>{$string}</center>";
+    }
+
+    private function limitString(string $value, int $limit, string $end = '...'): string
+    {
+        if (strlen($value) <= $limit) {
+            return $value;
+        }
+
+        return rtrim(substr($value, 0, $limit)).$end;
     }
 }
