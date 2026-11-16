@@ -1,7 +1,7 @@
 <h1 align="center">Wordpress Vercel Builds</h1>
 <br />
 <p align="center">
-  <a href="https://github.com/TimeZHero/wp-vercel-builds">
+  <a href="./screenshot.png">
     <img src="./screenshot.png" alt="Logo">
   </a>
 
@@ -12,20 +12,11 @@
 
 ## Install
 
-1. Add the following into your composer.json `repositories` key
-
-```
-{ 
-    "type": "github", 
-    "url": "https://github.com/TimeZHero/wp-vercel-builds" 
-}
-```
-
-2. Run `composer require "timezhero/vercel-builds"`
-3. Configure a Vercel webhook pointing to `https://yoursite.com/wp-json/builds/update`
-4. Define a constant `VERCEL_SIGNATURE_KEY` with the Vercel key created in Team > Settings > Webhooks
-5. Define a constant `VERCEL_API_BEARER_TOKEN` with the Vercel token created in Account > Tokens
-6. Activate the plugin and check out your dashboard tab
+1. Run `composer require "caffeina/vercel-builds"`. Until the package is on Packagist, first add this repository to your composer.json `repositories` key as a `vcs` entry
+2. Configure a Vercel webhook pointing to `https://yoursite.com/wp-json/builds/update`
+3. Define a constant `VERCEL_SIGNATURE_KEY` with the Vercel key created in Team > Settings > Webhooks
+4. Define a constant `VERCEL_API_BEARER_TOKEN` with the Vercel token created in Account > Tokens
+5. Activate the plugin and check out your dashboard tab
 
 ## Hooks
 1. `vercel_builds_capability`, to set the capability to view the build dashboard. The badge will be viewable to anyone. default: manage_options
