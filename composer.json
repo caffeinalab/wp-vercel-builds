@@ -1,10 +1,13 @@
 {
-  "name": "caffeina/vercel-builds",
+  "name": "caffeinalab/wp-vercel-builds",
   "description": "Are we there yet?",
   "minimum-stability": "dev",
   "type": "wordpress-plugin",
   "require": {
     "php": ">=8.0"
+  },
+  "extra": {
+    "installer-name": "vercel-builds"
   },
   "autoload": {
     "psr-4": {

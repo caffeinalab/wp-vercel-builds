@@ -12,7 +12,7 @@
 
 ## Install
 
-1. Run `composer require "caffeina/vercel-builds"`. Until the package is on Packagist, first add this repository to your composer.json `repositories` key as a `vcs` entry
+1. Run `composer require "caffeinalab/wp-vercel-builds"`. Until the package is on Packagist, first add `{ "type": "vcs", "url": "https://github.com/caffeinalab/wp-vercel-builds" }` to your composer.json `repositories` key
 2. Configure a Vercel webhook pointing to `https://yoursite.com/wp-json/builds/update`
 3. Define a constant `VERCEL_SIGNATURE_KEY` with the Vercel key created in Team > Settings > Webhooks
 4. Define a constant `VERCEL_API_BEARER_TOKEN` with the Vercel token created in Account > Tokens

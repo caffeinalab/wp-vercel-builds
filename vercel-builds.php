@@ -8,12 +8,12 @@ use Builds\BuildTable;
  * 
  * @package     Vercel Builds
  * @author      Stefano Fasoli <stefanofasoli17@gmail.com>
- * @version     3.2.0
+ * @version     3.3.0
  * 
  * @wordpress-plugin
  * Plugin Name:     Vercel Builds
  * Description:     Vercel Builds
- * Version:         3.2.0
+ * Version:         3.3.0
  * Author:          Stefano Fasoli <stefanofasoli17@gmail.com>
  * Text Domain:     vercel_builds
  * Requires PHP:    8.0
